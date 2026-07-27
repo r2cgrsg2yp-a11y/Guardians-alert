@@ -21,7 +21,7 @@ jobs:
       - name: Check wait time
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-          THRESHOLD: "300"
+          THRESHOLD: "40"
         run: python3 check.py
 
       - name: Save state
