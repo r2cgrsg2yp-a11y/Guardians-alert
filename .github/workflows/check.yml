@@ -2,31 +2,21 @@ name: Guardians wait check
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
+
+concurrency:
+  group: guardians
+  cancel-in-progress: false
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 340
     steps:
       - uses: actions/checkout@v4
-
-      - name: Restore state
-        uses: actions/cache/restore@v4
-        with:
-          path: state.json
-          key: guardians-state-${{ github.run_id }}
-          restore-keys: guardians-state-
-
       - name: Check wait time
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-          THRESHOLD: "600"
+          THRESHOLD: "40"
         run: python3 check.py
-
-      - name: Save state
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: state.json
-          key: guardians-state-${{ github.run_id }}
